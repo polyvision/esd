@@ -10,6 +10,7 @@ SoundEngine::SoundEngine(){
 	m_dwCurrentActiveChannel = 0;
 	m_dwCurrentRecordingChannel = 0;
 	m_dwCurrentRecordingOutputChannel = 0;
+	m_bIsRecording = false;
 	connect(qApp,SIGNAL(aboutToQuit()), this, SLOT(shutdown()));
 }
 
@@ -135,15 +136,18 @@ void SoundEngine::run(){
 	QLogger::instance()->log(1,"SoundEngine ended thread");
 }
 
+/**
+ * checks if we are recording
+ **/
 bool SoundEngine::is_recording(){
 	if(m_dwCurrentRecordingChannel <= 0){
 		return false;
 	}
-
+	/*
  	if(BASS_ChannelIsActive(m_dwCurrentRecordingChannel) == BASS_ACTIVE_PAUSED){
  		return false;
- 	}
-	return true;
+ 	}*/
+	return m_bIsRecording;
 }
 
 
@@ -151,23 +155,6 @@ BOOL CALLBACK RecordingCallback(HRECORD handle, const void *buffer, DWORD length
 	HSTREAM *output =  reinterpret_cast<HSTREAM*>(user);
  	BASS_StreamPutData(*output, buffer, length); // feed the recorded data to the output stream
  	return true;
-}
-
-bool SoundEngine::continue_recording(){
-	int error = 0;
-	
-	if(m_dwCurrentRecordingChannel <= 0){
-		return false;
-	}
-
-	if(!BASS_ChannelPlay(m_dwCurrentRecordingChannel,true)){
-		error = BASS_ErrorGetCode();
-		if( error!= BASS_OK){
-			QLogger::instance()->log(1,QString("SoundEngine::continue_recording: BASS_ChannelPlay error %1").arg(error));
-		}
-		return false;	
-	}
-	return true;
 }
 
 bool SoundEngine::start_recording(){
@@ -201,12 +188,46 @@ bool SoundEngine::start_recording(){
 	}
 
 
+	m_bIsRecording = true;
 	QLogger::instance()->log(1,"SoundEngine::start_recording: successfully started recording");
 	return true;
 }
 
-bool SoundEngine::stop_recording(){
+/**
+ * continues the recording process
+ **/
+bool SoundEngine::continue_recording(){
 	int error = 0;
+	
+	if(m_dwCurrentRecordingChannel <= 0){
+		return false;
+	}
+
+	/*if(!BASS_ChannelPlay(m_dwCurrentRecordingChannel,true)){
+		error = BASS_ErrorGetCode();
+		if( error!= BASS_OK){
+			QLogger::instance()->log(1,QString("SoundEngine::continue_recording: BASS_ChannelPlay error %1").arg(error));
+		}
+		return false;	
+	}*/
+
+	if(!BASS_ChannelSetAttribute(m_dwCurrentRecordingOutputChannel,BASS_ATTRIB_VOL,0.9f)){
+		error = BASS_ErrorGetCode();
+		if( error!= BASS_OK){
+			QLogger::instance()->log(1,QString("SoundEngine::continue_recording: BASS_ChannelSetAttribute error %1").arg(error));
+			return false;
+		}
+	}
+	QLogger::instance()->log(1,QString("SoundEngine::continue_recording successfull"));
+	m_bIsRecording = true;
+	return true;
+}
+
+/**
+ * pauses / stops the recording process
+ */
+bool SoundEngine::stop_recording(){
+	/*int error = 0;
 	if(BASS_ChannelIsActive(m_dwCurrentRecordingChannel) == BASS_ACTIVE_STOPPED	){
 		QLogger::instance()->log(1,QString("SoundEngine::stop_recording: recording channel seems not to be activate"));
 		return true;
@@ -219,8 +240,10 @@ bool SoundEngine::stop_recording(){
 			QLogger::instance()->log(1,QString("SoundEngine::stop_recording: BASS_ChannelStop error %1").arg(error));
 		}
 		return false;	
-	}
+	}*/
 
+	BASS_ChannelSetAttribute(m_dwCurrentRecordingOutputChannel,BASS_ATTRIB_VOL,0.0f);
+	m_bIsRecording = false;
 	QLogger::instance()->log(1,QString("SoundEngine::stop_recording: stopped recording"));
 	return true;
 }

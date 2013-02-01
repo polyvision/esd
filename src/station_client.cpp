@@ -76,9 +76,9 @@ void StationClient::emitos_api_request(QString mac,bool activate){
 
 	QString url;
  	if(activate){
- 		url = QString("http://localhost:3000/api/callbox/activate/%2").arg(mac);	
+ 		url = QString("http://localhost/api/callbox/activate/%2").arg(mac);	
  	}else{
- 		url = QString("http://localhost:3000/api/callbox/deactivate/%2").arg(mac);	
+ 		url = QString("http://localhost/api/callbox/deactivate/%2").arg(mac);	
  	}
  	
 	QLogger::instance()->log(1,QString("StationClient:emitos_api_request url: %1").arg(url));
