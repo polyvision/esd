@@ -53,9 +53,10 @@ void StationClient::readIncoming(){
 		//SoundEngine::instance()->enqueueSample(sound_file);
 
 		if(m_strIncomingMessage.contains("ON")){
-			this->emitos_api_request("666-777",true);
+			
+			this->emitos_api_request(m_strIncomingMessage.remove("ON").remove(" ").remove("#"),true);
 		}else{
-			this->emitos_api_request("666-777",false);
+			this->emitos_api_request(m_strIncomingMessage.remove("OFF").remove(" ").remove("#"),false);
 		}
 		m_strIncomingMessage.clear(); // und dannn die nachricht wieder löschen
 	}
@@ -76,6 +77,7 @@ void StationClient::emitos_api_request(QString mac,bool activate){
 
 	QString url;
  	if(activate){
+
  		url = QString("http://localhost/api/callbox/activate/%2").arg(mac);	
  	}else{
  		url = QString("http://localhost/api/callbox/deactivate/%2").arg(mac);	
