@@ -30,6 +30,18 @@ int AppSettings::get_recording_device(){
 	return settings.value("esd_recording_device",0).toInt();
 }
 
+
+void AppSettings::set_station_server_port(int v){
+	QSettings settings;
+	settings.setValue("station_server_port",v);
+	printf("saved station server port to: %i\n",v);
+}
+
+int AppSettings::get_station_server_port(){
+	QSettings settings;
+	return settings.value("station_server_port",8866).toInt();	
+}
+
 void AppSettings::print_info(){
 	QSettings settings;
 
@@ -41,4 +53,6 @@ void AppSettings::print_info(){
 
 	printf("using recording device: ");
 	SoundEngine::print_recording_device_info(recording_device);
+
+	printf("station server port: %i\n",AppSettings::get_station_server_port());
 }

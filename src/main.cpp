@@ -7,6 +7,7 @@
 #include "inc/sound_engine.h"
 #include "inc/app_settings.h"
 #include "inc/psd_server.h"
+#include "inc/station_server.h"
 #include "inc/qlogger.h"
 
 void default_stuff(){
@@ -40,12 +41,17 @@ int main(int argc,char **argv){
 			default_stuff();
 			AppSettings::print_info();
 		}
+		else if(strcmp(argv[1],"set_station_server_port") == 0){
+			default_stuff();
+			AppSettings::set_station_server_port(atoi(argv[2]));
+		}
 		else if(strcmp(argv[1],"daemon") == 0){
 			QCoreApplication a(argc, argv);
 			
 			QLogger::instance()->openLogFile("esd.log");
 			default_stuff();
 
+			StationServer::instance()->initialize();
 			SoundEngine::instance()->initialize();
 			PsdServer::instance()->initialize();
 
@@ -59,6 +65,7 @@ int main(int argc,char **argv){
 		printf("list_sound_devices - listing sound devices\n");
 		printf("list_recording_devices - listing recording sound devices\n");
 		printf("set_recording_device NUM - set recording devices\n");
+		printf("set_station_server_port NUM - set TC/IP port for incomming call box connections\n");
 		printf("set_sound_device NUM - set sound devices\n");
 		printf("show_settings - lists all saved settings\n");
 		printf("daemon - runs the esd as a server daemon process\n");
