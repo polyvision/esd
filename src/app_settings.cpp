@@ -42,6 +42,17 @@ int AppSettings::get_station_server_port(){
 	return settings.value("station_server_port",8866).toInt();	
 }
 
+void AppSettings::set_emitos_host(QString v){
+	QSettings settings;
+	settings.setValue("emitos_host",v);
+	printf("saved emitos_host to: %s\n",v.toStdString().c_str());
+}
+
+QString AppSettings::get_emitos_host(){
+	QSettings settings;
+	return settings.value("emitos_host","http://localhost/").toString();	
+}
+
 void AppSettings::print_info(){
 	QSettings settings;
 
@@ -55,4 +66,5 @@ void AppSettings::print_info(){
 	SoundEngine::print_recording_device_info(recording_device);
 
 	printf("station server port: %i\n",AppSettings::get_station_server_port());
+	printf("emitos host: %s\n",AppSettings::get_emitos_host().toStdString().c_str());
 }

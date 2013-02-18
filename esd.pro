@@ -11,6 +11,7 @@ SOURCES += src/qlogger.cpp
 SOURCES += src/psd_server.cpp
 SOURCES += src/station_server.cpp
 SOURCES += src/station_client.cpp
+SOURCES += src/ecycler.cpp
 
 HEADERS += inc/bass.h
 HEADERS += inc/sound_engine.h
@@ -19,6 +20,7 @@ HEADERS += inc/qlogger.h
 HEADERS += inc/psd_server.h
 HEADERS += inc/station_server.h
 HEADERS += inc/station_client.h
+HEADERS += inc/ecycler.h
 
 macx {
 	message("OSX libraries")

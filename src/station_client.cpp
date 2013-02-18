@@ -1,5 +1,6 @@
 #include "inc/station_client.h"
 #include "inc/qlogger.h"
+#include "inc/app_settings.h"
 
 
 StationClient::StationClient(QTcpSocket *connection){
@@ -14,7 +15,12 @@ StationClient::StationClient(QTcpSocket *connection){
 }
 
 StationClient::~StationClient(){
-	delete m_pClientConnection;
+	if(m_pClientConnection){
+		m_pClientConnection->close();
+		delete m_pClientConnection;
+		m_pClientConnection = NULL; 
+	}
+
 	delete m_pNetworkManager;
 	QLogger::instance()->log(1,QString("StationClient deleted"));
 }
@@ -63,11 +69,21 @@ void StationClient::readIncoming(){
 	else{
 		QLogger::instance()->log(1,QString("StationClient:readIncoming: inc message does not contain # -> %1").arg(m_strIncomingMessage));
 	}
+	
+	m_pClientConnection->close();
+	m_pClientConnection->deleteLater();
+	m_pClientConnection = NULL;
 }
 
 void StationClient::lostConnection(){
 	QLogger::instance()->log(1,QString("StationClient:lostConnection"));
-	//this->m_bExitThread = true;
+	if(m_pClientConnection){
+		m_pClientConnection->abort();
+		m_pClientConnection->deleteLater();
+		m_pClientConnection= NULL;
+	}
+	this->m_bExitThread = true;
+	this->quit();
 }
 
 void StationClient::emitos_api_request(QString mac,bool activate){
@@ -78,9 +94,9 @@ void StationClient::emitos_api_request(QString mac,bool activate){
 	QString url;
  	if(activate){
 
- 		url = QString("http://localhost/api/callbox/activate/%2").arg(mac);	
+ 		url = QString("%1/api/callbox/activate/%2").arg(AppSettings::get_emitos_host()).arg(mac);	
  	}else{
- 		url = QString("http://localhost/api/callbox/deactivate/%2").arg(mac);	
+ 		url = QString("%1/api/callbox/deactivate/%2").arg(AppSettings::get_emitos_host()).arg(mac);	
  	}
  	
 	QLogger::instance()->log(1,QString("StationClient:emitos_api_request url: %1").arg(url));

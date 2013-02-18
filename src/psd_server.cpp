@@ -82,7 +82,9 @@ void PsdServer::readIncoming()
 	else{
 		QLogger::instance()->log(1,QString("PsdServer:readIncoming: inc message does not contain # -> %1").arg(m_strIncomingMessage));
 	}
-
+	m_pTCPConnection->close(); // close connection
+	m_pTCPConnection->deleteLater();
+	m_pTCPConnection = NULL;
 }
 
 /*
@@ -101,5 +103,6 @@ void PsdServer::lostConnection()
 		m_pTCPConnection->disconnectFromHost();
 		//m_pTCPConnection->waitForDisconnected();
 		m_pTCPConnection->abort();
+		m_pTCPConnection->deleteLater();
 	}
 }

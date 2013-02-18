@@ -116,16 +116,16 @@ void SoundEngine::run(){
 				BASS_ChannelIsActive(m_dwCurrentActiveChannel) != BASS_ACTIVE_STALLED){
 				// nichts spielt ab, also auf zum nächsten sample falls eines das ist zum spielen
 				if(m_lSamplesToPlay.isEmpty() == false){
-					this->playSample(m_lSamplesToPlay.last());
-					m_lSamplesToPlay.removeLast(); // das letzte rauslöschen
+					this->playSample(m_lSamplesToPlay.first());
+					m_lSamplesToPlay.removeFirst(); // das letzte rauslöschen
 					QLogger::instance()->log(1,QString("SoundEngine: %1 samples left enqueued").arg(m_lSamplesToPlay.size()));
 				}else{
 					m_dwCurrentActiveChannel = 0;
 				}
 			}
 		}else if(m_lSamplesToPlay.isEmpty() == false){
-			this->playSample(m_lSamplesToPlay.last());
-			m_lSamplesToPlay.removeLast(); // das letzte rauslöschen
+			this->playSample(m_lSamplesToPlay.first());
+			m_lSamplesToPlay.removeFirst(); // das letzte rauslöschen
 			QLogger::instance()->log(1,QString("SoundEngine: %1 samples left enqueued").arg(m_lSamplesToPlay.size()));
 		}else{
 			if(this->is_recording() == false){

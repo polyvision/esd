@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QFile>
-#include <QTextOStream>
+#include <QTextStream>
 #include <QMutex>
 #include "inc/singleton.h"
 
