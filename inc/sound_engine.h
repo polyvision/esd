@@ -11,6 +11,9 @@ class SoundEngine: public QThread,public Singleton<SoundEngine> {
 	Q_OBJECT
 	friend class Singleton<SoundEngine>;
 
+public slots:
+	void shutdown();
+
 public:
 	SoundEngine();	
 
@@ -20,7 +23,6 @@ public:
 	static void print_recording_device_info(int n);
 
 	bool initialize();
-	bool shutdown();
 
 	void playSample(QString);
 	void enqueueSample(QString);
@@ -30,6 +32,8 @@ public:
 	bool is_recording();
 	bool start_recording();
 	bool stop_recording();
+	bool continue_recording();
+
 private:
 	QList<QString> m_lSamplesToPlay;
 	bool	m_bExitThread;
