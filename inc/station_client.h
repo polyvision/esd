@@ -19,6 +19,11 @@ public slots:
 	void			api_request_finished(QNetworkReply * reply);
 
 private:
+	void			inc_thread_counter();
+	void			dec_thread_counter();
+	
+	static int m_iThreadCounter;
+	
 	QTcpSocket *m_pClientConnection;
 	bool		m_bExitThread;
 	QString		m_strIncomingMessage;

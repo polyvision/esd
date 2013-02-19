@@ -82,6 +82,7 @@ void SoundEngine::enqueueSample(QString v){
 }
 
 void SoundEngine::playSample(QString samplePath){
+	return;
 	QLogger::instance()->log(1,QString("SoundEngine::playSample:<%1>").arg(samplePath));
 
 	this->stop_recording();

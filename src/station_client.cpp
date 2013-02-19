@@ -3,34 +3,49 @@
 #include "inc/app_settings.h"
 
 
+int StationClient::m_iThreadCounter = 0;
+
 StationClient::StationClient(QTcpSocket *connection){
+	m_pNetworkManager = NULL;
 	this->m_pClientConnection = connection;
 	m_bExitThread = false;
 
 	connect(this, SIGNAL(started()), this, SLOT(threadStarted()));
-
-	//QLogger::instance()->log(QLogger::QL_INFO,QString("Eine Verbindung zu einem PSD-Client an %1:%2 wurde aufgebaut").arg(m_pTCPConnection->peerAddress().toString()).arg(m_pTCPConnection->peerPort()));
 	connect(m_pClientConnection, SIGNAL(readyRead()), this, SLOT(readIncoming()));
 	connect(m_pClientConnection, SIGNAL(disconnected()), this, SLOT(lostConnection()));
+	connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+	this->inc_thread_counter();
 }
 
-StationClient::~StationClient(){
-	if(m_pClientConnection){
-		m_pClientConnection->close();
-		delete m_pClientConnection;
-		m_pClientConnection = NULL; 
-	}
 
-	delete m_pNetworkManager;
+StationClient::~StationClient(){
+	disconnect(this, SIGNAL(started()), this, SLOT(threadStarted()));
+
+	if(m_pNetworkManager){
+		delete m_pNetworkManager;
+	}
+	
+	
 	QLogger::instance()->log(1,QString("StationClient deleted"));
+	this->dec_thread_counter();
+}
+
+void StationClient::inc_thread_counter(){
+	m_iThreadCounter++;
+	QLogger::instance()->log(1,QString("StationClient:inc_thread_counter: %1").arg(m_iThreadCounter));
+}
+
+void StationClient::dec_thread_counter(){
+	m_iThreadCounter--;
+	QLogger::instance()->log(1,QString("StationClient:dec_thread_counter: %1").arg(m_iThreadCounter));
 }
 
 void StationClient::threadStarted(){
 	// updating some thread stuff
-	while(!this->m_bExitThread){
-		qApp->processEvents(QEventLoop::AllEvents,10);
-	}
-	QLogger::instance()->log(1,QString("StationClient:: exiting thread"));
+	//while(!this->m_bExitThread){
+	//	qApp->processEvents(QEventLoop::AllEvents,10);
+	//}
+	//QLogger::instance()->log(1,QString("StationClient:: exiting thread"));
 }
 
 void StationClient::readIncoming(){
@@ -69,20 +84,13 @@ void StationClient::readIncoming(){
 	else{
 		QLogger::instance()->log(1,QString("StationClient:readIncoming: inc message does not contain # -> %1").arg(m_strIncomingMessage));
 	}
-	
-	m_pClientConnection->close();
-	m_pClientConnection->deleteLater();
-	m_pClientConnection = NULL;
 }
 
 void StationClient::lostConnection(){
 	QLogger::instance()->log(1,QString("StationClient:lostConnection"));
-	if(m_pClientConnection){
-		m_pClientConnection->abort();
-		m_pClientConnection->deleteLater();
-		m_pClientConnection= NULL;
-	}
 	this->m_bExitThread = true;
+	m_pClientConnection->abort();
+	this->m_pClientConnection->deleteLater();
 	this->quit();
 }
 
@@ -106,7 +114,6 @@ void StationClient::emitos_api_request(QString mac,bool activate){
 void StationClient::api_request_finished(QNetworkReply * reply){
 	QLogger::instance()->log(1,QString("StationClient:api_request_finished"));
 	reply->deleteLater();
-	this->deleteLater();
 	this->m_bExitThread = true;
 	this->quit();
 }

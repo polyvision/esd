@@ -26,6 +26,8 @@ void StationServer::incomingConnection()
 
 		StationClient *pClient = new StationClient(pTcpConnection);
 		pClient->start();
+		//pTcpConnection->abort();
+		//delete pTcpConnection;
 		//connect(m_pTCPConnection, SIGNAL(readyRead()), this, SLOT(readIncoming()));
 		//connect(m_pTCPConnection, SIGNAL(disconnected()), this, SLOT(lostConnection()));
 	}
