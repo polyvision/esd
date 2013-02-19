@@ -37,6 +37,7 @@ public:
 private:
 	QList<QString> m_lSamplesToPlay;
 	bool	m_bExitThread;
+	bool	m_bIsRecording;
 	DWORD	m_dwCurrentActiveChannel;
 	HRECORD m_dwCurrentRecordingChannel;
 	HSTREAM m_dwCurrentRecordingOutputChannel;

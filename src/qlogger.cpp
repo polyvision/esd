@@ -24,7 +24,7 @@ void QLogger::setLogLevel(unsigned int v)
 
 void QLogger::log(unsigned int level,QString v)
 {
-	//QMutexLocker locker(&m_mutex);
+	m_mutex.lock();
 
 	if(m_uiLogLevel >= level)
 	{
@@ -34,6 +34,7 @@ void QLogger::log(unsigned int level,QString v)
 			*m_pStdOutputStream << v << endl;
 		}
 	}
+	m_mutex.unlock();
 }
 
 bool QLogger::openLogFile(QString path)
