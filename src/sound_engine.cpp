@@ -9,6 +9,7 @@ SoundEngine::SoundEngine(){
 	m_bExitThread = false;
 	m_dwCurrentActiveChannel = 0;
 	m_dwCurrentRecordingChannel = 0;
+
 	m_dwCurrentRecordingOutputChannel = 0;
 	m_bIsRecording = false;
 	connect(qApp,SIGNAL(aboutToQuit()), this, SLOT(shutdown()));
@@ -81,6 +82,7 @@ void SoundEngine::enqueueSample(QString v){
 }
 
 void SoundEngine::playSample(QString samplePath){
+	return;
 	QLogger::instance()->log(1,QString("SoundEngine::playSample:<%1>").arg(samplePath));
 
 	this->stop_recording();
@@ -140,6 +142,7 @@ void SoundEngine::run(){
  * checks if we are recording
  **/
 bool SoundEngine::is_recording(){
+
 	if(m_dwCurrentRecordingChannel <= 0){
 		return false;
 	}
@@ -160,10 +163,9 @@ BOOL CALLBACK RecordingCallback(HRECORD handle, const void *buffer, DWORD length
 bool SoundEngine::start_recording(){
 	int error = 0;
 
-	// the output stream for the recording	
-	if(m_dwCurrentRecordingOutputChannel == 0){
-		m_dwCurrentRecordingOutputChannel = BASS_StreamCreate(44100, 2, 0, STREAMPROC_PUSH, NULL);
-	}
+	m_dwCurrentRecordingOutputChannel = 0;
+	m_dwCurrentRecordingOutputChannel = BASS_StreamCreate(44100, 2, 0, STREAMPROC_PUSH, NULL);
+
 
 	if(!BASS_ChannelPlay(m_dwCurrentRecordingOutputChannel,true)){
 		error = BASS_ErrorGetCode();
@@ -173,19 +175,17 @@ bool SoundEngine::start_recording(){
 		return false;	
 	}
 
-	// the recording stuff itself
-	
-	if(m_dwCurrentRecordingChannel == 0){
-		m_dwCurrentRecordingChannel = BASS_RecordStart(44100, 2, 0, &RecordingCallback, &m_dwCurrentRecordingOutputChannel);
-		if(m_dwCurrentRecordingChannel <= 0){
-			error = BASS_ErrorGetCode();
-			if( error!= BASS_OK){
-				QLogger::instance()->log(1,QString("SoundEngine::start_recording: BASS_RecordStart error %1").arg(error));
-			}
-			return false;
+	m_dwCurrentRecordingChannel = 0;
+	m_dwCurrentRecordingChannel = BASS_RecordStart(44100, 2, 0, &RecordingCallback, &m_dwCurrentRecordingOutputChannel);
+	if(m_dwCurrentRecordingChannel <= 0){
+		error = BASS_ErrorGetCode();
+		if( error!= BASS_OK){
+			QLogger::instance()->log(1,QString("SoundEngine::start_recording: BASS_RecordStart error %1").arg(error));
 		}
-		QLogger::instance()->log(1,QString("SoundEngine::start_recording: recording channel %1").arg(m_dwCurrentRecordingChannel));
+		return false;
 	}
+
+	QLogger::instance()->log(1,QString("SoundEngine::start_recording: recording channel %1").arg(m_dwCurrentRecordingChannel));
 
 
 	m_bIsRecording = true;
@@ -253,4 +253,5 @@ void SoundEngine::shutdown(){
 	this->stop_recording();
 	BASS_Free();
 	QLogger::instance()->log(1,QString("SoundEngine::shutdown: shutdown finished"));
+
 }

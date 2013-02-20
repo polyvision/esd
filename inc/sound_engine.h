@@ -33,6 +33,7 @@ public:
 	bool start_recording();
 	bool stop_recording();
 	bool continue_recording();
+
 private:
 	QList<QString> m_lSamplesToPlay;
 	bool	m_bExitThread;

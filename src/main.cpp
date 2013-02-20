@@ -63,6 +63,7 @@ int main(int argc,char **argv){
 			PsdServer::instance()->initialize();
 
 			SoundEngine::instance()->start(); // starting the thread for the sound server
+
 			SoundEngine::instance()->start_recording();
 
 			QLogger::instance()->log(1,"daemon started");

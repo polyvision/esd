@@ -23,7 +23,7 @@ stations = add_device(stations,"666-3333")
 
 num_calls = 0
 randomizer = Random.new(Time.now.to_i)
-for i in 0..1000 do
+for i in 0..90000 do
   current_device = stations[randomizer.rand(0..stations.size()-1)] # random station
 
 	TCPSocket.open("localhost", 8866) {|s|
