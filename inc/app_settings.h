@@ -17,6 +17,12 @@ public:
 	static void set_station_server_port(int);
 	static int 	get_station_server_port();
 
+	static void set_recording_bit_rate(int);
+	static int 	get_recording_bit_rate();
+
+	static void set_playback_bit_rate(int);
+	static int 	get_playback_bit_rate();
+
 	static void set_emitos_host(QString);
 	static QString get_emitos_host();
 	

@@ -53,6 +53,28 @@ QString AppSettings::get_emitos_host(){
 	return settings.value("emitos_host","http://localhost/").toString();	
 }
 
+void AppSettings::set_recording_bit_rate(int v){
+	QSettings settings;
+	settings.setValue("emitos_recording_bit_rate",v);
+	printf("saved recording bit rate to: %i\n",v);
+}
+
+int AppSettings::get_recording_bit_rate(){
+	QSettings settings;
+	return settings.value("emitos_recording_bit_rate",48000).toInt();	
+}
+
+void AppSettings::set_playback_bit_rate(int v){
+	QSettings settings;
+	settings.setValue("emitos_playback_bit_rate",v);
+	printf("saved playback bit rate to: %i\n",v);
+}
+
+int AppSettings::get_playback_bit_rate(){
+	QSettings settings;
+	return settings.value("emitos_playback_bit_rate",48000).toInt();	
+}
+
 void AppSettings::print_info(){
 	QSettings settings;
 
@@ -64,6 +86,9 @@ void AppSettings::print_info(){
 
 	printf("using recording device: ");
 	SoundEngine::print_recording_device_info(recording_device);
+
+	printf("recording sound bit rate: %ihz\n",AppSettings::get_recording_bit_rate());
+	printf("playback sound bit rate: %ihz\n",AppSettings::get_playback_bit_rate());
 
 	printf("station server port: %i\n",AppSettings::get_station_server_port());
 	printf("emitos host: %s\n",AppSettings::get_emitos_host().toStdString().c_str());

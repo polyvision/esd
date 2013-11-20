@@ -55,14 +55,16 @@ bool SoundEngine::initialize(){
 		return false;
 	}
 
+	BASS_SetConfig(BASS_CONFIG_DEV_BUFFER, 100);
+	BASS_SetConfig(BASS_CONFIG_REC_BUFFER, 1000);
 	// initialize default output device
 	int sound_device = AppSettings::get_sound_device();
-	if (!BASS_Init(sound_device,44100,0,NULL,NULL)) {
+	if (!BASS_Init(sound_device,AppSettings::get_playback_bit_rate(),BASS_DEVICE_MONO,NULL,NULL)) {
 		QLogger::instance()->log(1,"SoundEngine: can't initialize playback device");
 		return false;
 	}
 
-	QLogger::instance()->log(1,QString("SoundEngine: playback device %1 successfully initialized").arg(sound_device));
+	QLogger::instance()->log(1,QString("SoundEngine: playback device %1 successfully initialized with %2hz" ).arg(sound_device).arg(AppSettings::get_playback_bit_rate()));
 
 	// recording
 	int recording_device = AppSettings::get_recording_device();
@@ -72,7 +74,7 @@ bool SoundEngine::initialize(){
 		return false;
 	}
 
-	QLogger::instance()->log(1,QString("SoundEngine: recording device %1 successfully initialized:").arg(recording_device));
+	QLogger::instance()->log(1,QString("SoundEngine: recording device %1 successfully initialized").arg(recording_device));
 	return true;
 }
 
@@ -111,6 +113,7 @@ void SoundEngine::run(){
 	QLogger::instance()->log(1,"SoundEngine started thread");
 	while(m_bExitThread == false){
 		qApp->processEvents(QEventLoop::AllEvents,10);
+		this->usleep(300);
 
 		if(m_dwCurrentActiveChannel > 0){ // überprüfung ob ein sample am abspielen ist
 			if(BASS_ChannelIsActive(m_dwCurrentActiveChannel) != BASS_ACTIVE_PLAYING &&
@@ -159,12 +162,15 @@ BOOL CALLBACK RecordingCallback(HRECORD handle, const void *buffer, DWORD length
  	return true;
 }
 
+void CALLBACK PlaybackSyncProc(HSYNC handle, DWORD channel, DWORD data, void *user){
+	//QLogger::instance()->log(1,QString("PlaybackSyncProc"));
+}
+
 bool SoundEngine::start_recording(){
 	int error = 0;
 
 	m_dwCurrentRecordingOutputChannel = 0;
-	m_dwCurrentRecordingOutputChannel = BASS_StreamCreate(44100, 2, 0, STREAMPROC_PUSH, NULL);
-
+	m_dwCurrentRecordingOutputChannel = BASS_StreamCreate(AppSettings::get_recording_bit_rate(), 1, 0, STREAMPROC_PUSH, NULL);
 
 	if(!BASS_ChannelPlay(m_dwCurrentRecordingOutputChannel,true)){
 		error = BASS_ErrorGetCode();
@@ -174,8 +180,10 @@ bool SoundEngine::start_recording(){
 		return false;	
 	}
 
+	BASS_ChannelSetSync(m_dwCurrentRecordingOutputChannel,BASS_SYNC_STALL,0,PlaybackSyncProc,0);
+
 	m_dwCurrentRecordingChannel = 0;
-	m_dwCurrentRecordingChannel = BASS_RecordStart(44100, 2, 0, &RecordingCallback, &m_dwCurrentRecordingOutputChannel);
+	m_dwCurrentRecordingChannel = BASS_RecordStart(AppSettings::get_recording_bit_rate(), 1, 0, &RecordingCallback, &m_dwCurrentRecordingOutputChannel);
 	if(m_dwCurrentRecordingChannel <= 0){
 		error = BASS_ErrorGetCode();
 		if( error!= BASS_OK){
@@ -186,9 +194,8 @@ bool SoundEngine::start_recording(){
 
 	QLogger::instance()->log(1,QString("SoundEngine::start_recording: recording channel %1").arg(m_dwCurrentRecordingChannel));
 
-
 	m_bIsRecording = true;
-	QLogger::instance()->log(1,"SoundEngine::start_recording: successfully started recording");
+	QLogger::instance()->log(1,QString("SoundEngine::start_recording: successfully started recording with %1hz").arg(AppSettings::get_recording_bit_rate()));
 	return true;
 }
 
