@@ -25,6 +25,12 @@ public:
 
 	static void set_emitos_host(QString);
 	static QString get_emitos_host();
+
+	static void set_sound_volume(float);
+	static float  get_sound_volume();
+	
+	static void set_music_volume(float);
+	static float  get_music_volume();
 	
 	static void	print_info();
 };

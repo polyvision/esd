@@ -74,6 +74,8 @@ bool SoundEngine::initialize(){
 		return false;
 	}
 
+	QLogger::instance()->log(1,QString("SoundEngine: global music volume %1").arg(BASS_GetConfig(BASS_CONFIG_GVOL_STREAM)));
+	QLogger::instance()->log(1,QString("SoundEngine: global sample volume %1").arg(BASS_GetConfig(BASS_CONFIG_GVOL_SAMPLE)));
 	QLogger::instance()->log(1,QString("SoundEngine: recording device %1 successfully initialized").arg(recording_device));
 	return true;
 }
@@ -99,6 +101,7 @@ void SoundEngine::playSample(QString samplePath){
 		QLogger::instance()->log(1,QString("SoundEngine::playSample: stream nr %1").arg(stream));
 	}
 
+	BASS_ChannelSetAttribute(stream,BASS_ATTRIB_VOL,AppSettings::get_sound_volume());
 	if(!BASS_ChannelPlay(stream,true)){
 		QLogger::instance()->log(1,"SoundEngine: failed to play sample");
 		error = BASS_ErrorGetCode();
@@ -194,6 +197,8 @@ bool SoundEngine::start_recording(){
 
 	QLogger::instance()->log(1,QString("SoundEngine::start_recording: recording channel %1").arg(m_dwCurrentRecordingChannel));
 
+	BASS_ChannelSetAttribute(m_dwCurrentRecordingOutputChannel,BASS_ATTRIB_VOL,AppSettings::get_music_volume());
+
 	m_bIsRecording = true;
 	QLogger::instance()->log(1,QString("SoundEngine::start_recording: successfully started recording with %1hz").arg(AppSettings::get_recording_bit_rate()));
 	return true;
@@ -217,7 +222,7 @@ bool SoundEngine::continue_recording(){
 		return false;	
 	}*/
 
-	if(!BASS_ChannelSetAttribute(m_dwCurrentRecordingOutputChannel,BASS_ATTRIB_VOL,0.9f)){
+	if(!BASS_ChannelSetAttribute(m_dwCurrentRecordingOutputChannel,BASS_ATTRIB_VOL,AppSettings::get_music_volume())){
 		error = BASS_ErrorGetCode();
 		if( error!= BASS_OK){
 			QLogger::instance()->log(1,QString("SoundEngine::continue_recording: BASS_ChannelSetAttribute error %1").arg(error));

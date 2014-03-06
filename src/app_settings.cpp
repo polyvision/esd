@@ -75,6 +75,28 @@ int AppSettings::get_playback_bit_rate(){
 	return settings.value("emitos_playback_bit_rate",48000).toInt();	
 }
 
+void AppSettings::set_sound_volume(float v){
+	QSettings settings;
+	settings.setValue("emitos_sound_volume",v);
+	printf("saved sound volume to: %f\n",v);
+}
+
+float AppSettings::get_sound_volume(){
+	QSettings settings;
+	return settings.value("emitos_sound_volume",1.0f).toFloat();	
+}
+	
+void AppSettings::set_music_volume(float v){
+	QSettings settings;
+	settings.setValue("emitos_music_volume",v);
+	printf("saved music volume to: %f\n",v);
+}
+
+float  AppSettings::get_music_volume(){
+	QSettings settings;
+	return settings.value("emitos_music_volume",1.0f).toFloat();	
+}
+
 void AppSettings::print_info(){
 	QSettings settings;
 
@@ -92,4 +114,7 @@ void AppSettings::print_info(){
 
 	printf("station server port: %i\n",AppSettings::get_station_server_port());
 	printf("emitos host: %s\n",AppSettings::get_emitos_host().toStdString().c_str());
+
+	printf("music volume: %f\n",AppSettings::get_music_volume());
+	printf("sound volume: %f\n",AppSettings::get_sound_volume());
 }
