@@ -1,8 +1,8 @@
 #ifndef SOUND_ENGINE_H
 #define SOUND_ENGINE_H
 
-#include "inc/bass.h"
-#include "inc/singleton.h"
+#include "../inc/bass.h"
+#include "../inc/singleton.h"
 #include <QString>
 #include <QList>
 #include <QThread>

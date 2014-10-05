@@ -1,7 +1,7 @@
-#include "inc/station_server.h"
-#include "inc/qlogger.h"
-#include "inc/app_settings.h"
-#include "inc/station_client.h"
+#include "../inc/station_server.h"
+#include "../inc/qlogger.h"
+#include "../inc/app_settings.h"
+#include "../inc/station_client.h"
 
 StationServer::StationServer(): QObject(){
 	m_pTcpServer = NULL;

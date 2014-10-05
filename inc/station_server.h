@@ -1,7 +1,7 @@
 #ifndef STATION_SERVER_H
 #define STATION_SERVER_H
 
-#include "inc/singleton.h"
+#include "../inc/singleton.h"
 #include <QtNetwork>
 
 class StationServer: public QObject,public Singleton<StationServer>{

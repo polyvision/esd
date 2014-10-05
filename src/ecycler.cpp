@@ -1,6 +1,6 @@
-#include "inc/ecycler.h"
-#include "inc/qlogger.h"
-#include "inc/app_settings.h"
+#include "../inc/ecycler.h"
+#include "../inc/qlogger.h"
+#include "../inc/app_settings.h"
 
 ECycler::ECycler(){
 	m_pNetworkManager = new QNetworkAccessManager(this);

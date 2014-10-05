@@ -1,7 +1,7 @@
 #ifndef PSD_SERVER_H
 #define PSD_SERVER_H
 
-#include "inc/singleton.h"
+#include "../inc/singleton.h"
 #include <QtNetwork>
 
 class PsdServer : public QObject,public Singleton<PsdServer>{

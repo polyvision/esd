@@ -1,6 +1,6 @@
-#include "inc/station_client.h"
-#include "inc/qlogger.h"
-#include "inc/app_settings.h"
+#include "../inc/station_client.h"
+#include "../inc/qlogger.h"
+#include "../inc/app_settings.h"
 
 
 int StationClient::m_iThreadCounter = 0;

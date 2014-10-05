@@ -1,16 +1,14 @@
+#define NOMINMAX
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <limits>
 #include <QCoreApplication>
 #include <QTextStream>
 
-#include "inc/sound_engine.h"
-#include "inc/app_settings.h"
-#include "inc/psd_server.h"
-#include "inc/station_server.h"
-#include "inc/qlogger.h"
-#include "inc/ecycler.h"
+#include "../inc/esdservice.h"
 
 void default_stuff(){
 	// default stuff
@@ -20,8 +18,12 @@ void default_stuff(){
 }
 
 int main(int argc,char **argv){
+    default_stuff();
 
+    EsdService service(argc, argv);
+    //return service.exec();
 
+    /*
 	if(argc >= 2){
 		if(strcmp(argv[1],"list_sound_devices") == 0){
 			default_stuff();
@@ -74,7 +76,7 @@ int main(int argc,char **argv){
 			SoundEngine::instance()->initialize();
 			SoundEngine::instance()->start(); // starting the thread for the sound server
 			SoundEngine::instance()->start_recording();
-			sleep(5);
+            //sleep(5);
 			printf("fake start done");
 		}
 		else if(strcmp(argv[1],"daemon") == 0){
@@ -115,4 +117,5 @@ int main(int argc,char **argv){
 		printf("daemon - runs the esd as a server daemon process\n");
 	}
 	return 0;
+    */
 }

@@ -5,7 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMutex>
-#include "inc/singleton.h"
+#include "../inc/singleton.h"
 
 class QLogger : public QObject, public Singleton<QLogger>
 {

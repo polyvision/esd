@@ -1,6 +1,6 @@
-#include "inc/sound_engine.h"
-#include "inc/app_settings.h"
-#include "inc/qlogger.h"
+#include "../inc/sound_engine.h"
+#include "../inc/app_settings.h"
+#include "../inc/qlogger.h"
 #include <stdio.h>
 #include <cstdio>
 #include <QCoreApplication>

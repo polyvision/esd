@@ -1,5 +1,5 @@
-#include "inc/app_settings.h"
-#include "inc/sound_engine.h"
+#include "../inc/app_settings.h"
+#include "../inc/sound_engine.h"
 #include <stdio.h>
 
 AppSettings::AppSettings(){

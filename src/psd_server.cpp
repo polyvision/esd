@@ -1,6 +1,6 @@
-#include "inc/psd_server.h"
-#include "inc/qlogger.h"
-#include "inc/sound_engine.h"
+#include "../inc/psd_server.h"
+#include "../inc/qlogger.h"
+#include "../inc/sound_engine.h"
 
 PsdServer::PsdServer(){
 	m_pTcpServer = NULL;

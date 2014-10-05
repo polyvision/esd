@@ -1,4 +1,4 @@
-#include "inc/qlogger.h"
+#include "../inc/qlogger.h"
 #include <QMutexLocker>
 
 /*
