@@ -7,9 +7,9 @@
 #define STATE_DAEMON 666
 #define STATE_ADMIN 100
 
-class EsdService : public QtService<QCoreApplication>
+class EsdService
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
     EsdService(int argc, char **argv);
     ~EsdService();

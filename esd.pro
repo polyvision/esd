@@ -1,15 +1,11 @@
 TEMPLATE = app
-CONFIG  += qt warn_on debug network
 
 QT -= gui
 QT += network
 
 SOURCES += src/main.cpp \
     qtservice/qtservice.cpp \
-    qtservice/qtservice_unix.cpp \
     qtservice/qtservice_win.cpp \
-    qtservice/qtunixserversocket.cpp \
-    qtservice/qtunixsocket.cpp \
     src/esdservice.cpp
 SOURCES += src/sound_engine.cpp
 SOURCES += src/app_settings.cpp
@@ -23,8 +19,6 @@ HEADERS += inc/bass.h \
     inc/singleton.h \
     qtservice/qtservice.h \
     qtservice/qtservice_p.h \
-    qtservice/qtunixserversocket.h \
-    qtservice/qtunixsocket.h \
     inc/esdservice.h
 HEADERS += inc/sound_engine.h
 HEADERS += inc/app_settings.h
@@ -34,15 +28,10 @@ HEADERS += inc/station_server.h
 HEADERS += inc/station_client.h
 HEADERS += inc/ecycler.h
 
-macx {
-	message("OSX libraries")
-	LIBS += libs/libbass.dylib
+INCLUDEPATH += $$PWD/
+DEPENDPATH += $$PWD/
 
-	mylib.path = Contents/MacOS
- 	mylib.files = libs/libbass.dylib
- 	QMAKE_BUNDLE_DATA += mylib
-}
-LIBS += -L$$PWD/libs/ -lbass
+unix:!symbian|win32: LIBS += -L$$PWD/ -lbass
 
 INCLUDEPATH += $$PWD/
 DEPENDPATH += $$PWD/

@@ -7,11 +7,11 @@
 #include "../inc/qlogger.h"
 #include "../inc/ecycler.h"
 
-EsdService::EsdService(int argc, char **argv): QtService<QCoreApplication>(argc, argv, "ESD sound service")
+EsdService::EsdService(int argc, char **argv)
 {
     this->mi_state = STATE_DAEMON;
-    setServiceDescription("ESD sound service");
-    setServiceFlags(QtServiceBase::CanBeSuspended);
+//    setServiceDescription("ESD sound service");
+//    setServiceFlags(QtServiceBase::CanBeSuspended);
 }
 
 EsdService::~EsdService()
@@ -20,7 +20,7 @@ EsdService::~EsdService()
 
 void EsdService::start(){
     QLogger::instance()->openLogFile("esd.log");
-    default_stuff();
+    //default_stuff();
 
     ECycler *pCycler = new ECycler();
 
